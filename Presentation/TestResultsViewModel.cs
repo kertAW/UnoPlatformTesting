@@ -23,10 +23,14 @@ public partial class TestResultsViewModel : ObservableObject
     private float _score;
 
     public ICommand CreateTestResultCommand { get; }
+    public ICommand DeleteTestResultCommand { get; }
+    public ICommand EditTestResultCommand { get; }
 
     public TestResultsViewModel()
     {
         CreateTestResultCommand = new AsyncRelayCommand<XamlRoot>(CreateTestResult);
+        DeleteTestResultCommand = new AsyncRelayCommand<TestResult>(DeleteTestResult);
+        EditTestResultCommand = new AsyncRelayCommand<TestResult>(EditTestResult);
         LoadInitialData();
     }
 
@@ -43,7 +47,7 @@ public partial class TestResultsViewModel : ObservableObject
             new("Michael Miller"),
             new("Linda Wilson"),
             new("Robert Moore"),
-            new("Patricia Taylor")
+            new("Patricia Taylor"),
         };
         students.ForEach(Students.Add);
 
@@ -53,7 +57,7 @@ public partial class TestResultsViewModel : ObservableObject
             new("Science Test", 0, 100),
             new("History Test", 0, 100),
             new("Geography Test", 0, 100),
-            new("English Test", 0, 100)
+            new("English Test", 0, 100),
         };
         tests.ForEach(Tests.Add);
 
@@ -62,9 +66,15 @@ public partial class TestResultsViewModel : ObservableObject
         {
             foreach (var test in tests)
             {
-                if (random.Next(0, 2) == 0)
+                if (random.Next(0, 10) == 0)
                 {
-                    TestResults.Add(new TestResult(test, student, random.Next((int)test.MinScore, (int)test.MaxScore)));
+                    TestResults.Add(
+                        new TestResult(
+                            test,
+                            student,
+                            random.Next((int)test.MinScore, (int)test.MaxScore)
+                        )
+                    );
                 }
             }
         }
@@ -72,10 +82,15 @@ public partial class TestResultsViewModel : ObservableObject
 
     private async Task CreateTestResult(XamlRoot? xamlRoot)
     {
+        SelectedStudent = null;
+        SelectedTest = null;
+        Score = 0;
+
         var dialog = new CreateTestResultDialog
         {
             DataContext = this,
-            XamlRoot = xamlRoot
+            XamlRoot = xamlRoot,
+            Title = "Create Test Result",
         };
 
         var result = await dialog.ShowAsync();
@@ -91,7 +106,7 @@ public partial class TestResultsViewModel : ObservableObject
                     Title = "Success",
                     Content = "Test result created successfully.",
                     CloseButtonText = "OK",
-                    XamlRoot = xamlRoot
+                    XamlRoot = xamlRoot,
                 }.ShowAsync();
             }
             catch (Exception e)
@@ -101,7 +116,99 @@ public partial class TestResultsViewModel : ObservableObject
                     Title = "Error",
                     Content = $"Error creating test result: {e.Message}",
                     CloseButtonText = "OK",
-                    XamlRoot = xamlRoot
+                    XamlRoot = xamlRoot,
+                }.ShowAsync();
+            }
+        }
+    }
+
+    private XamlRoot? GetXamlRoot()
+    {
+        if (
+            App.Current is App app
+            && app.MainWindow is not null
+            && app.MainWindow.Content is not null
+        )
+        {
+            return app.MainWindow.Content.XamlRoot;
+        }
+        return null;
+    }
+
+    private async Task DeleteTestResult(TestResult? testResult)
+    {
+        if (testResult is null)
+            return;
+
+        var xamlRoot = GetXamlRoot();
+        if (xamlRoot is null)
+            return;
+
+        var dialog = new ContentDialog
+        {
+            Title = "Delete Test Result",
+            Content = "Are you sure you want to delete this test result?",
+            PrimaryButtonText = "Delete",
+            SecondaryButtonText = "Cancel",
+            XamlRoot = xamlRoot,
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            TestResults.Remove(testResult);
+        }
+    }
+
+    private async Task EditTestResult(TestResult? testResult)
+    {
+        if (testResult is null)
+            return;
+
+        var xamlRoot = GetXamlRoot();
+        if (xamlRoot is null)
+            return;
+
+        SelectedStudent = testResult.Student;
+        SelectedTest = testResult.PassedTest;
+        Score = testResult.Score;
+
+        var dialog = new CreateTestResultDialog
+        {
+            DataContext = this,
+            XamlRoot = xamlRoot,
+            Title = "Edit Test Result",
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            try
+            {
+                // To update the UI, we remove the old one and add a new one.
+                // In a real application, we would update the existing object.
+                var newTestResult = new TestResult(SelectedTest!, SelectedStudent!, Score);
+                TestResults.Remove(testResult);
+                TestResults.Add(newTestResult);
+
+                await new ContentDialog
+                {
+                    Title = "Success",
+                    Content = "Test result updated successfully.",
+                    CloseButtonText = "OK",
+                    XamlRoot = xamlRoot,
+                }.ShowAsync();
+            }
+            catch (Exception e)
+            {
+                await new ContentDialog
+                {
+                    Title = "Error",
+                    Content = $"Error updating test result: {e.Message}",
+                    CloseButtonText = "OK",
+                    XamlRoot = xamlRoot,
                 }.ShowAsync();
             }
         }
