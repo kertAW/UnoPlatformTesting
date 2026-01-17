@@ -17,8 +17,11 @@ public partial class MainViewModel : ObservableObject
         Title += $" - {localizer["ApplicationName"]}";
         Title += $" - {appInfo?.Value?.Environment}";
         GoToSecond = new AsyncRelayCommand(GoToSecondView);
+        TestResultsViewModel = new TestResultsViewModel();
     }
     public string? Title { get; }
+
+    public TestResultsViewModel TestResultsViewModel { get; }
 
     public ICommand GoToSecond { get; }
 

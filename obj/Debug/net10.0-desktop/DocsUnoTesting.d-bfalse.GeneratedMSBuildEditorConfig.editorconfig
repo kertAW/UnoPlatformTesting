@@ -112,6 +112,14 @@ build_metadata.AdditionalFiles.FullPath = D:\Other\projects\DocsUnoTesting\DocsU
 build_metadata.AdditionalFiles.Identity = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0-desktop\UnoImage.inputs
 build_metadata.AdditionalFiles.XamlRuntime = 
 
+[D:/Other/projects/DocsUnoTesting/DocsUnoTesting/Presentation/CreateTestResultDialog.xaml]
+build_metadata.AdditionalFiles.SourceItemGroup = Page
+build_metadata.AdditionalFiles.Link = 
+build_metadata.AdditionalFiles.TargetPath = 
+build_metadata.AdditionalFiles.FullPath = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\Presentation\CreateTestResultDialog.xaml
+build_metadata.AdditionalFiles.Identity = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\Presentation\CreateTestResultDialog.xaml
+build_metadata.AdditionalFiles.XamlRuntime = 
+
 [D:/Other/projects/DocsUnoTesting/DocsUnoTesting/Presentation/MainPage.xaml]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 build_metadata.AdditionalFiles.Link = 
@@ -134,6 +142,14 @@ build_metadata.AdditionalFiles.Link =
 build_metadata.AdditionalFiles.TargetPath = 
 build_metadata.AdditionalFiles.FullPath = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\Presentation\Shell.xaml
 build_metadata.AdditionalFiles.Identity = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\Presentation\Shell.xaml
+build_metadata.AdditionalFiles.XamlRuntime = 
+
+[D:/Other/projects/DocsUnoTesting/DocsUnoTesting/Presentation/TestResultsView.xaml]
+build_metadata.AdditionalFiles.SourceItemGroup = Page
+build_metadata.AdditionalFiles.Link = 
+build_metadata.AdditionalFiles.TargetPath = 
+build_metadata.AdditionalFiles.FullPath = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\Presentation\TestResultsView.xaml
+build_metadata.AdditionalFiles.Identity = D:\Other\projects\DocsUnoTesting\DocsUnoTesting\Presentation\TestResultsView.xaml
 build_metadata.AdditionalFiles.XamlRuntime = 
 
 [D:/Other/projects/DocsUnoTesting/DocsUnoTesting/Styles/ColorPaletteOverride.xaml]

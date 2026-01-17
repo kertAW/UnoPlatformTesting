@@ -1,6 +1,6 @@
 namespace DocsUnoTesting.Models;
 
-internal class TestResult : IHasId
+public class TestResult : IHasId
 {
     private readonly Guid _id = Guid.NewGuid();
     private readonly Test test;
@@ -15,12 +15,14 @@ internal class TestResult : IHasId
         {
             throw new ArgumentException("Оценка не может быть больше или меньше порогов");
         }
+        Score = score;
     }
 
     public Guid Id => _id;
 
     public Test PassedTest => test;
     public Student Student => student;
+    public float Score { get; }
 
     private bool CheckScoreIsValid(Test test, float score)
     {

@@ -27,3 +27,4 @@ D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0\DocsUnoTesting
 D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0\refint\DocsUnoTesting.dll
 D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0\DocsUnoTesting.pdb
 D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0\ref\DocsUnoTesting.dll
+D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0\DocsUnoTesting.sourcelink.json

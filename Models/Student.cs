@@ -1,6 +1,6 @@
 namespace DocsUnoTesting.Models;
 
-internal class Student(string fullname) : IHasId
+public class Student(string fullname) : IHasId
 {
     private readonly Guid _id = Guid.NewGuid();
 

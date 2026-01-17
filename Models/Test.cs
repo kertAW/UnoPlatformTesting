@@ -1,6 +1,6 @@
 namespace DocsUnoTesting.Models;
 
-internal class Test(string name, float minScore, float maxScore) : IHasId
+public class Test(string name, float minScore, float maxScore) : IHasId
 {
     private readonly Guid _id = Guid.NewGuid();
 

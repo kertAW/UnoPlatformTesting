@@ -372,3 +372,4 @@ D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0-desktop\refint
 D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0-desktop\DocsUnoTesting.pdb
 D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0-desktop\DocsUnoTesting.genruntimeconfig.cache
 D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0-desktop\ref\DocsUnoTesting.dll
+D:\Other\projects\DocsUnoTesting\DocsUnoTesting\obj\Debug\net10.0-desktop\DocsUnoTesting.sourcelink.json
