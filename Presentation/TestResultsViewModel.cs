@@ -3,12 +3,19 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DocsUnoTesting.Models;
+using DocsUnoTesting.Repositories;
 using Microsoft.UI.Xaml;
+using Uno.Extensions.Navigation;
 
 namespace DocsUnoTesting.Presentation;
 
 public partial class TestResultsViewModel : ObservableObject
 {
+    private readonly StudentRepository _studentRepository;
+    private readonly TestRepository _testRepository;
+    private readonly TestResultRepository _testResultRepository;
+    private readonly INavigator _navigator;
+
     public ObservableCollection<TestResult> TestResults { get; } = new();
     public ObservableCollection<Student> Students { get; } = new();
     public ObservableCollection<Test> Tests { get; } = new();
@@ -25,59 +32,36 @@ public partial class TestResultsViewModel : ObservableObject
     public ICommand CreateTestResultCommand { get; }
     public ICommand DeleteTestResultCommand { get; }
     public ICommand EditTestResultCommand { get; }
+    public ICommand NavigateToDetailsCommand { get; }
 
-    public TestResultsViewModel()
+    public TestResultsViewModel(
+        StudentRepository studentRepository, 
+        TestRepository testRepository, 
+        TestResultRepository testResultRepository,
+        INavigator navigator)
     {
+        _studentRepository = studentRepository;
+        _testRepository = testRepository;
+        _testResultRepository = testResultRepository;
+        _navigator = navigator;
+
         CreateTestResultCommand = new AsyncRelayCommand<XamlRoot>(CreateTestResult);
         DeleteTestResultCommand = new AsyncRelayCommand<TestResult>(DeleteTestResult);
         EditTestResultCommand = new AsyncRelayCommand<TestResult>(EditTestResult);
+        NavigateToDetailsCommand = new AsyncRelayCommand<TestResult>(NavigateToDetails);
         LoadInitialData();
+    }
+
+    private async Task NavigateToDetails(TestResult? testResult)
+    {
+        await _navigator.NavigateViewModelAsync<TestResultDetailsViewModel>(this, data: testResult);
     }
 
     private void LoadInitialData()
     {
-        var students = new List<Student>
-        {
-            new("John Doe"),
-            new("Jane Smith"),
-            new("Peter Jones"),
-            new("Mary Williams"),
-            new("David Brown"),
-            new("Susan Davis"),
-            new("Michael Miller"),
-            new("Linda Wilson"),
-            new("Robert Moore"),
-            new("Patricia Taylor"),
-        };
-        students.ForEach(Students.Add);
-
-        var tests = new List<Test>
-        {
-            new("Math Test", 0, 100),
-            new("Science Test", 0, 100),
-            new("History Test", 0, 100),
-            new("Geography Test", 0, 100),
-            new("English Test", 0, 100),
-        };
-        tests.ForEach(Tests.Add);
-
-        var random = new Random();
-        foreach (var student in students)
-        {
-            foreach (var test in tests)
-            {
-                if (random.Next(0, 10) == 0)
-                {
-                    TestResults.Add(
-                        new TestResult(
-                            test,
-                            student,
-                            random.Next((int)test.MinScore, (int)test.MaxScore)
-                        )
-                    );
-                }
-            }
-        }
+        _studentRepository.GetAll().ToList().ForEach(Students.Add);
+        _testRepository.GetAll().ToList().ForEach(Tests.Add);
+        _testResultRepository.GetAll().ToList().ForEach(TestResults.Add);
     }
 
     private async Task CreateTestResult(XamlRoot? xamlRoot)
@@ -90,7 +74,7 @@ public partial class TestResultsViewModel : ObservableObject
         {
             DataContext = this,
             XamlRoot = xamlRoot,
-            Title = "Create Test Result",
+            Title = "Create Test Result"
         };
 
         var result = await dialog.ShowAsync();
@@ -100,13 +84,15 @@ public partial class TestResultsViewModel : ObservableObject
             try
             {
                 var newTestResult = new TestResult(SelectedTest!, SelectedStudent!, Score);
+                _testResultRepository.Add(newTestResult);
                 TestResults.Add(newTestResult);
+
                 await new ContentDialog
                 {
                     Title = "Success",
                     Content = "Test result created successfully.",
                     CloseButtonText = "OK",
-                    XamlRoot = xamlRoot,
+                    XamlRoot = xamlRoot
                 }.ShowAsync();
             }
             catch (Exception e)
@@ -116,7 +102,7 @@ public partial class TestResultsViewModel : ObservableObject
                     Title = "Error",
                     Content = $"Error creating test result: {e.Message}",
                     CloseButtonText = "OK",
-                    XamlRoot = xamlRoot,
+                    XamlRoot = xamlRoot
                 }.ShowAsync();
             }
         }
@@ -124,11 +110,7 @@ public partial class TestResultsViewModel : ObservableObject
 
     private XamlRoot? GetXamlRoot()
     {
-        if (
-            App.Current is App app
-            && app.MainWindow is not null
-            && app.MainWindow.Content is not null
-        )
+        if (App.Current is App app && app.MainWindow is not null && app.MainWindow.Content is not null)
         {
             return app.MainWindow.Content.XamlRoot;
         }
@@ -137,12 +119,10 @@ public partial class TestResultsViewModel : ObservableObject
 
     private async Task DeleteTestResult(TestResult? testResult)
     {
-        if (testResult is null)
-            return;
+        if (testResult is null) return;
 
         var xamlRoot = GetXamlRoot();
-        if (xamlRoot is null)
-            return;
+        if (xamlRoot is null) return;
 
         var dialog = new ContentDialog
         {
@@ -150,25 +130,24 @@ public partial class TestResultsViewModel : ObservableObject
             Content = "Are you sure you want to delete this test result?",
             PrimaryButtonText = "Delete",
             SecondaryButtonText = "Cancel",
-            XamlRoot = xamlRoot,
+            XamlRoot = xamlRoot
         };
 
         var result = await dialog.ShowAsync();
 
         if (result == ContentDialogResult.Primary)
         {
+            _testResultRepository.Delete(testResult.Id);
             TestResults.Remove(testResult);
         }
     }
 
     private async Task EditTestResult(TestResult? testResult)
     {
-        if (testResult is null)
-            return;
-
+        if (testResult is null) return;
+        
         var xamlRoot = GetXamlRoot();
-        if (xamlRoot is null)
-            return;
+        if (xamlRoot is null) return;
 
         SelectedStudent = testResult.Student;
         SelectedTest = testResult.PassedTest;
@@ -178,7 +157,7 @@ public partial class TestResultsViewModel : ObservableObject
         {
             DataContext = this,
             XamlRoot = xamlRoot,
-            Title = "Edit Test Result",
+            Title = "Edit Test Result"
         };
 
         var result = await dialog.ShowAsync();
@@ -187,18 +166,19 @@ public partial class TestResultsViewModel : ObservableObject
         {
             try
             {
+                var updatedTestResult = new TestResult(SelectedTest!, SelectedStudent!, Score);
+                _testResultRepository.Update(updatedTestResult);
+                
                 // To update the UI, we remove the old one and add a new one.
-                // In a real application, we would update the existing object.
-                var newTestResult = new TestResult(SelectedTest!, SelectedStudent!, Score);
                 TestResults.Remove(testResult);
-                TestResults.Add(newTestResult);
+                TestResults.Add(updatedTestResult);
 
                 await new ContentDialog
                 {
                     Title = "Success",
                     Content = "Test result updated successfully.",
                     CloseButtonText = "OK",
-                    XamlRoot = xamlRoot,
+                    XamlRoot = xamlRoot
                 }.ShowAsync();
             }
             catch (Exception e)
@@ -208,7 +188,7 @@ public partial class TestResultsViewModel : ObservableObject
                     Title = "Error",
                     Content = $"Error updating test result: {e.Message}",
                     CloseButtonText = "OK",
-                    XamlRoot = xamlRoot,
+                    XamlRoot = xamlRoot
                 }.ShowAsync();
             }
         }

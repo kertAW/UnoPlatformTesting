@@ -18,7 +18,9 @@
             ItemsSource="{Binding TestResults}"
             Width="800"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+            VerticalAlignment="Center"
+            IsItemClickEnabled="True"
+            ItemClick="ListView_ItemClick">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="BorderBrush" Value="LightGray" />

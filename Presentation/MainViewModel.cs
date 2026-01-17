@@ -1,3 +1,5 @@
+using DocsUnoTesting.Repositories;
+
 namespace DocsUnoTesting.Presentation;
 
 public partial class MainViewModel : ObservableObject
@@ -10,14 +12,17 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(
         IStringLocalizer localizer,
         IOptions<AppConfig> appInfo,
-        INavigator navigator)
+        INavigator navigator,
+        StudentRepository studentRepository,
+        TestRepository testRepository,
+        TestResultRepository testResultRepository)
     {
         _navigator = navigator;
         Title = "Main";
         Title += $" - {localizer["ApplicationName"]}";
         Title += $" - {appInfo?.Value?.Environment}";
         GoToSecond = new AsyncRelayCommand(GoToSecondView);
-        TestResultsViewModel = new TestResultsViewModel();
+        TestResultsViewModel = new TestResultsViewModel(studentRepository, testRepository, testResultRepository, navigator);
     }
     public string? Title { get; }
 

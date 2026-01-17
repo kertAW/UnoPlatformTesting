@@ -1,3 +1,4 @@
+using DocsUnoTesting.Repositories;
 using Uno.Resizetizer;
 
 namespace DocsUnoTesting;
@@ -73,8 +74,9 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    services.AddSingleton<StudentRepository>();
+                    services.AddSingleton<TestRepository>();
+                    services.AddSingleton<TestResultRepository>();
                 })
                 .UseNavigation(RegisterRoutes)
             );
@@ -93,14 +95,18 @@ public partial class App : Application
         views.Register(
             new ViewMap(ViewModel: typeof(ShellViewModel)),
             new ViewMap<MainPage, MainViewModel>(),
-            new DataViewMap<SecondPage, SecondViewModel, Entity>()
+            new DataViewMap<SecondPage, SecondViewModel, Entity>(),
+            new DataViewMap<TestResultDetailsPage, TestResultDetailsViewModel, TestResult>()
         );
 
         routes.Register(
             new RouteMap("", View: views.FindByViewModel<ShellViewModel>(),
                 Nested:
                 [
-                    new ("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault:true),
+                    new ("Main", View: views.FindByViewModel<MainViewModel>(), IsDefault:true, Nested:
+                    [
+                        new ("TestResultDetails", View: views.FindByViewModel<TestResultDetailsViewModel>())
+                    ]),
                     new ("Second", View: views.FindByViewModel<SecondViewModel>()),
                 ]
             )
