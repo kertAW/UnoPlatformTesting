@@ -1,6 +1,7 @@
 namespace DocsUnoTesting.Models;
 
-internal class TestStage(
+public class TestStage(
+    string name,
     Test test,
     float minScore,
     float maxScore,
@@ -11,6 +12,7 @@ internal class TestStage(
     private readonly Guid _id = Guid.NewGuid();
 
     public Guid Id => _id;
+    public string Name { get; } = name;
 
     public Test Test => test;
 

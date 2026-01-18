@@ -1,0 +1,32 @@
+﻿<Page
+    x:Class="DocsUnoTesting.Presentation.TreeViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DocsUnoTesting.Presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xmlns:models="using:DocsUnoTesting.Models"
+>
+    <Grid Width="800" Height="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Text="Tree View (Deep Dive)"
+            Style="{StaticResource HeaderTextBlockStyle}"
+            Margin="20"
+        />
+
+        <muxc:TreeView Grid.Row="1" ItemsSource="{Binding TreeNodes}" Margin="20,0,0,0">
+            <muxc:TreeView.ItemTemplate>
+                <DataTemplate x:DataType="muxc:TreeViewNode">
+                    <TextBlock Text="{Binding Content.DisplayText}" />
+                </DataTemplate>
+            </muxc:TreeView.ItemTemplate>
+        </muxc:TreeView>
+    </Grid>
+</Page>

@@ -1,6 +1,11 @@
 namespace DocsUnoTesting.Models;
 
-public class Test(string name, float minScore, float maxScore) : IHasId
+public class Test(
+    string name,
+    float minScore,
+    float maxScore,
+    IEnumerable<TestStage>? stages = null
+) : IHasId
 {
     private readonly Guid _id = Guid.NewGuid();
 
@@ -10,4 +15,6 @@ public class Test(string name, float minScore, float maxScore) : IHasId
 
     public float MinScore => minScore;
     public float MaxScore => maxScore;
+
+    public IEnumerable<TestStage> Stages => stages ?? [];
 }

@@ -15,24 +15,37 @@ public partial class MainViewModel : ObservableObject
         INavigator navigator,
         StudentRepository studentRepository,
         TestRepository testRepository,
-        TestResultRepository testResultRepository)
+        TestResultRepository testResultRepository
+    )
     {
         _navigator = navigator;
         Title = "Main";
         Title += $" - {localizer["ApplicationName"]}";
         Title += $" - {appInfo?.Value?.Environment}";
         GoToSecond = new AsyncRelayCommand(GoToSecondView);
-        TestResultsViewModel = new TestResultsViewModel(studentRepository, testRepository, testResultRepository, navigator);
+        ShowTreeViewCommand = new AsyncRelayCommand(ShowTreeView);
+        TestResultsViewModel = new TestResultsViewModel(
+            studentRepository,
+            testRepository,
+            testResultRepository,
+            navigator
+        );
     }
+
     public string? Title { get; }
 
     public TestResultsViewModel TestResultsViewModel { get; }
 
     public ICommand GoToSecond { get; }
+    public ICommand ShowTreeViewCommand { get; }
 
     private async Task GoToSecondView()
     {
         await _navigator.NavigateViewModelAsync<SecondViewModel>(this, data: new Entity(Name!));
     }
 
+    private async Task ShowTreeView()
+    {
+        await _navigator.NavigateViewModelAsync<TreeViewModel>(this);
+    }
 }

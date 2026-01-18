@@ -1,14 +1,26 @@
+using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DocsUnoTesting.Models;
-using Uno.Extensions.Navigation; // Add this using directive if needed for INavigable or similar
 
 namespace DocsUnoTesting.Presentation;
 
-[ObservableObject]
-public partial class TestResultDetailsViewModel //: INavigable // Might need to implement this
+public partial class TestResultDetailsViewModel : ObservableObject
 {
     [ObservableProperty]
     private TestResult? _testResult;
+
+    [ObservableProperty]
+    private ObservableCollection<TestStageResultDisplayViewModel> _rootStageResults = new(); // Changed type
+
+    [ObservableProperty]
+    private string _formattedScore = string.Empty;
+
+    partial void OnTestResultChanged(TestResult? oldValue, TestResult? newValue)
+    {
+        if (newValue != null)
+            Initialize(newValue);
+    }
 
     /// <summary>
     /// Initializes the view model with the TestResult data.
@@ -19,5 +31,19 @@ public partial class TestResultDetailsViewModel //: INavigable // Might need to 
     public void Initialize(TestResult testResult)
     {
         TestResult = testResult;
+        FormattedScore = $"Score: {TestResult.Score:F2}";
+
+        // Populate RootStageResults with wrapper ViewModels
+        RootStageResults.Clear();
+        if (TestResult?.StageResults != null)
+        {
+            var allStageResults = TestResult.StageResults.ToList();
+            foreach (var stageResult in allStageResults.Where(sr => sr.Stage.ParentStage == null))
+            {
+                RootStageResults.Add(
+                    new TestStageResultDisplayViewModel(stageResult, allStageResults)
+                );
+            }
+        }
     }
 }

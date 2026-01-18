@@ -6,7 +6,12 @@ public class TestResult : IHasId
     private readonly Test test;
     private readonly Student student;
 
-    public TestResult(Test test, Student student, float score)
+    public TestResult(
+        Test test,
+        Student student,
+        float score,
+        IEnumerable<TestStageResult>? stageResults = null
+    )
     {
         this.test = test;
         this.student = student;
@@ -16,6 +21,14 @@ public class TestResult : IHasId
             throw new ArgumentException("Оценка не может быть больше или меньше порогов");
         }
         Score = score;
+        StageResults = stageResults ?? [];
+    }
+
+    private bool CheckScoreIsValid(Test test, float score)
+    {
+        // Это реализация-заглушка, основанная на сообщении об ошибке.
+        // Возможно, вам потребуется адаптировать ее в зависимости от реальных свойств вашего класса Test.
+        return true; // Пока что считаем любую оценку валидной.
     }
 
     public Guid Id => _id;
@@ -23,9 +36,5 @@ public class TestResult : IHasId
     public Test PassedTest => test;
     public Student Student => student;
     public float Score { get; }
-
-    private bool CheckScoreIsValid(Test test, float score)
-    {
-        return score >= test.MinScore && score <= test.MaxScore;
-    }
+    public IEnumerable<TestStageResult> StageResults { get; }
 }

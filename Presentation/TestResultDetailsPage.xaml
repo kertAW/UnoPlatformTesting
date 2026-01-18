@@ -4,15 +4,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:presentation="using:DocsUnoTesting.Presentation"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid Padding="20">
-        <StackPanel Spacing="10">
-            <TextBlock Text="Test Result Details" FontSize="24" FontWeight="Bold" />
-            <TextBlock Text="{Binding TestResult.Student.FullName, FallbackValue='Student:'}" />
-            <TextBlock Text="{Binding TestResult.PassedTest.Name, FallbackValue='Test:'}" />
-            <TextBlock Text="{Binding TestResult.Score, FallbackValue='Score:'}" />
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Test Result Details" FontSize="24" FontWeight="Bold" Margin="0,0,0,10" />
+        <TextBlock Grid.Row="1" Text="{Binding TestResult.Student.FullName, FallbackValue='Student:'}" FontSize="16" Margin="0,0,0,5" />
+        <TextBlock Grid.Row="2" Text="{Binding TestResult.PassedTest.Name, FallbackValue='Test:'}" FontSize="16" Margin="0,0,0,5" />
+        <TextBlock Grid.Row="3" Text="{Binding FormattedScore, FallbackValue='Score:'}" FontSize="16" Margin="0,0,0,10" />
+
+        <TreeView Grid.Row="4" ItemsSource="{Binding RootStageResults}" >
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="presentation:TestStageResultDisplayViewModel" ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding DisplayText}" />
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+            <TreeView.ItemTemplate>
+                <DataTemplate DataType="presentation:TestStageResultDisplayViewModel">
+                    <TextBlock Text="{Binding DisplayText}" />
+                </DataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </Page>

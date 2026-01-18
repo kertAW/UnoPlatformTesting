@@ -75,6 +75,8 @@ public partial class App : Application
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<StudentRepository>();
+                    services.AddSingleton<TestStageRepository>();
+                    services.AddSingleton<TestStageResultRepository>();
                     services.AddSingleton<TestRepository>();
                     services.AddSingleton<TestResultRepository>();
                 })
@@ -96,7 +98,8 @@ public partial class App : Application
             new ViewMap(ViewModel: typeof(ShellViewModel)),
             new ViewMap<MainPage, MainViewModel>(),
             new DataViewMap<SecondPage, SecondViewModel, Entity>(),
-            new DataViewMap<TestResultDetailsPage, TestResultDetailsViewModel, TestResult>()
+            new DataViewMap<TestResultDetailsPage, TestResultDetailsViewModel, TestResult>(),
+            new ViewMap<TreeViewPage, TreeViewModel>()
         );
 
         routes.Register(
@@ -108,6 +111,7 @@ public partial class App : Application
                         new ("TestResultDetails", View: views.FindByViewModel<TestResultDetailsViewModel>())
                     ]),
                     new ("Second", View: views.FindByViewModel<SecondViewModel>()),
+                    new ("TreeView", View: views.FindByViewModel<TreeViewModel>())
                 ]
             )
         );
